@@ -1,0 +1,8 @@
+.vs/
+bin/
+.config/
+cfg/settings.json
+Logs/
+obj/
+Properties/
+

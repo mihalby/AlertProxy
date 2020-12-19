@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertProxy", "AlertProxy.csproj", "{F40A1E21-909A-44A6-8F17-E3F693920583}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F40A1E21-909A-44A6-8F17-E3F693920583}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F40A1E21-909A-44A6-8F17-E3F693920583}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F40A1E21-909A-44A6-8F17-E3F693920583}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F40A1E21-909A-44A6-8F17-E3F693920583}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {06B23E3E-F80D-4EDC-9496-65EF3A1D55E5}
+	EndGlobalSection
+EndGlobal
