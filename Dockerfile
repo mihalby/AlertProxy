@@ -7,7 +7,7 @@ RUN apk add --no-cache \
 		icu-libs 
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
-FROM microsoft/dotnet:2.2-sdk-alpine AS build
+FROM microsoft/dotnet:3.1-sdk-alpine AS build
 WORKDIR /src
 COPY [".", "AlertProxy/"]
 RUN dotnet restore "AlertProxy/AlertProxy.csproj"
