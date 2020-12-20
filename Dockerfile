@@ -18,5 +18,5 @@ RUN dotnet publish "AlertProxy.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-RUN rm appsettings.json
+#RUN rm appsettings.json
 ENTRYPOINT ["dotnet", "AlertProxy.dll"]
