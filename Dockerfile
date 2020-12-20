@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/runtime:3.1-alpine3.12 AS base
+FROM mcr.microsoft.com/dotnet/runtime:5.0.101-alpine3.12-amd64 AS base
 WORKDIR /app
 EXPOSE 8100
 
@@ -7,7 +7,7 @@ RUN apk add --no-cache \
 		icu-libs 
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
-FROM mcr.microsoft.com/dotnet/sdk:3.1-alpine3.12 AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0.101-alpine3.12-amd64 AS build
 WORKDIR /src
 COPY [".", "AlertProxy/"]
 RUN dotnet restore "AlertProxy/AlertProxy.csproj"
