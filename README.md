@@ -27,10 +27,11 @@ Download archive from [Releases](https://github.com/mihalby/AlertProxy/releases)
 
 ### 1. Create configs (settings.json, user.json, serilog.json)
 ### 1.1. settings.json 
-**SSL** - configure ssl. Now service work only with ssl. Place you pfx to ./cfg directory. You will find fake pfx file in repo ./cfg, password 123123. 
-**Targets** - templates to forwards. Url and Body  is mustache templates. [More info about mustache](https://mustache.github.io/mustache.5.html).
+**SSL** - configure ssl. Now service work only with ssl. Place you pfx to ./cfg directory. You will find fake pfx file in repo ./cfg, password 123123.
 
- In example: 
+**Targets** - templates to forwards. Url and Body is mustache templates. [More info about mustache](https://mustache.github.io/mustache.5.html).
+
+example: 
  **target https:/youAlertproxy:8100/alert/kafka-ms** forward request to http://awx.uni.bn/api/v2/job_templates/108/launch/ ... 
 **target https:/youAlertproxy:8100/alert/tlg-itretail** forward message to telegram between telegram http api.
 
