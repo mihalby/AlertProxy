@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/runtime:5.0.101-alpine3.12-amd64 AS base
+FROM mcr.microsoft.com/dotnet/runtime:5.0.1-alpine3.12-amd64 AS base
 WORKDIR /app
 EXPOSE 8100
 
