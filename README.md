@@ -5,4 +5,4 @@
 
 ## How it work
 Alertproxy receive webhooks from Prometheus alertmanager.For each alert into webhook do build new web request with url and body based on setting templates mapped to alert object. Alertproxy forward new request.
-![Image alt](https://github.com/mihalby/alertproxy/raw/master/image.png)
+![Image alt](https://github.com/mihalby/alertproxy/raw/master/AlertProxy.png)
