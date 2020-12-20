@@ -127,8 +127,8 @@ example:
        
         http_config:
           basic_auth:
-          username: 'test'
-          password: 'test'
+            username: 'test'
+            password: 'test'
         tls_config:
           insecure_skip_verify: true
 
