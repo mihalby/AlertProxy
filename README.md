@@ -1,4 +1,5 @@
 
+
 [![Build Status](https://travis-ci.com/mihalby/alertproxy.svg?branch=master)](https://travis-ci.com/mihalby/alertproxy)
 [![Docker Build](https://img.shields.io/docker/automated/mihalby/alertproxy.svg)](https://hub.docker.com/r/mihalby/alertproxy)
 [![Docker Pulls](https://img.shields.io/docker/pulls/mihalby/alertproxy.svg)](https://hub.docker.com/r/mihalby/alertproxy)
@@ -11,9 +12,21 @@ Alertproxy receive webhooks from Prometheus alertmanager.For each alert into web
   <img width="75%" src="https://github.com/mihalby/alertproxy/raw/master/AlertProxy.png">
 </p>
 Now all forward requests send only POST method with application/json body in UTF-8 encoding.
-## How to use
+
+## How to use. Run.
+### Docker
+
+    docker run --privileged=true -e "TZ=Europe/Minsk" -h alertproxy -d -v /opt/alertproxy/logs:/app/logs -v /opt/alertproxy/cfg:/app/cfg -p 8107:8100 --name alertproxy mihalby/alertproxy:latest
+
+*Dont forget make you configs in ./cfg folder.*
+### Linux x64
+Download .zip from [Releases](https://github.com/mihalby/AlertProxy/releases) unzip, change configs, make file AlertProxy as executable and run
+./AlertProxy
+### Windows x64
+Download archive from [Releases](https://github.com/mihalby/AlertProxy/releases), change configs and run exe file.
+
 ### 1. Create configs (settings.json, user.json, serilog.json)
-1.1. settings.json 
+### 1.1. settings.json 
 **SSL** - configure ssl. Now service work only with ssl. Place you pfx to ./cfg directory. You will find fake pfx file in repo ./cfg, password 123123. 
 **Targets** - templates to forwards. Url and Body  is mustache templates. [More info about mustache](https://mustache.github.io/mustache.5.html).
 
