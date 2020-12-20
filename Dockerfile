@@ -1,22 +1,31 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+FROM microsoft/dotnet:3.1-aspnetcore-runtime-alpine AS base
 WORKDIR /app
 EXPOSE 8100
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
-WORKDIR /src
-COPY ["AlertProxy.csproj", ""]
-RUN dotnet restore "./AlertProxy.csproj"
-COPY . .
-WORKDIR "/src/."
-RUN dotnet build "AlertProxy.csproj" -c Release -o /app/build
+RUN apk add --no-cache \
+        bash \
+		icu-libs 
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
+FROM microsoft/dotnet:2.2-sdk-alpine AS build
+WORKDIR /src
+COPY [".", "AlertProxy/"]
+RUN dotnet restore "AlertProxy/AlertProxy.csproj"
+COPY . .
+WORKDIR "/src/AlertProxy"
+RUN dotnet build "AlertProxy.csproj" -c Release -o /app
+
+
+WORKDIR "/src/AlertProxy"
 FROM build AS publish
-RUN dotnet publish "AlertProxy.csproj" -c Release -o /app/publish
+RUN dotnet publish "AlertProxy.csproj" -c Release -o /app
+
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-#RUN rm appsettings.json
+RUN rm appsettings.json
+WORKDIR /app
+
 ENTRYPOINT ["dotnet", "AlertProxy.dll"]
+
