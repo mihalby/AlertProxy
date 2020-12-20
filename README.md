@@ -122,13 +122,13 @@ example:
 ## Prometheus Alertmanager reciver example config
 
     - name: 'auto-check-run-kafka-ms'
-     webhook_configs:
-     - url: 'https://YouAlertProxy:8100/alert/kafka-ms'
+      webhook_configs:
+      - url: 'https://YouAlertProxy:8100/alert/kafka-ms'
        
-       http_config:
+        http_config:
           basic_auth:
           username: 'test'
           password: 'test'
-       tls_config:
+        tls_config:
           insecure_skip_verify: true
 
