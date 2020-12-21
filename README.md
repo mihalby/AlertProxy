@@ -1,5 +1,6 @@
 
 
+
 [![Build Status](https://travis-ci.com/mihalby/alertproxy.svg?branch=master)](https://travis-ci.com/mihalby/alertproxy)
 [![Docker Build](https://img.shields.io/docker/automated/mihalby/alertproxy.svg)](https://hub.docker.com/r/mihalby/alertproxy)
 [![Docker Pulls](https://img.shields.io/docker/pulls/mihalby/alertproxy.svg)](https://hub.docker.com/r/mihalby/alertproxy)
@@ -25,47 +26,53 @@ Download .zip from [Releases](https://github.com/mihalby/AlertProxy/releases) un
 ### Windows x64
 Download archive from [Releases](https://github.com/mihalby/AlertProxy/releases), change configs and run exe file.
 
-### 1. Create configs (settings.json, user.json, serilog.json)
-### 1.1. settings.json 
+### 1. Create configs (settings.json, targets.json user.json, serilog.json)
+### 1.1. settings.json
+Base application config
 **SSL** - configure ssl. Now service work only with ssl. Place you pfx to ./cfg directory. You will find fake pfx file in repo ./cfg, password 123123.
 
-**Targets** - templates to forwards. Url and Body is mustache templates. [More info about mustache](https://mustache.github.io/mustache.5.html).
-
 example: 
- **target https:/youAlertproxy:8100/alert/kafka-ms** forward request to http://awx.uni.bn/api/v2/job_templates/108/launch/ ... 
-**target https:/youAlertproxy:8100/alert/tlg-itretail** forward message to telegram between telegram http api.
-
      {
       "SSL": {
         "password": "123123",
         "port": 8100,
         "sertificateName": "aspncer.pfx"
       },
-      "targets": {
-        "kafka-ms": {
-          "UrlTemplate": "http://awx.uni.bn/api/v2/job_templates/108/launch/",
-          "Bodytemplate": "{\"ask_inventory_on_launch\": false,\"can_start_without_user_input\": true,\"defaults\": {\"extra_vars\": \"\",\"inventory\": {\"id\": 3,\"name\": \"FirstInventory\"}},\"survey_enabled\": false,\"variables_needed_to_start\": [],\"node_templates_missing\": [],\"node_prompts_rejected\": [],\"job_template_data\": {\"id\": 108,\"description\": \"KAFKA-SERVICES-CHECK-RUN\",\"name\": \"KAFKA-SERVICES-CHECK-RUN\"}}",
-          "headers": {
-            "Accept-Encoding": "gzip,deflate",
-            "authorization": "Basic Yneneulewxo"
-          }
-        },
-        "tlg-itretail": {
-          "UrlTemplate": "https://api.telegram.org/botBOT-TOKEN/sendMessage",
-          "Bodytemplate": "{\"chat_id\": \"-CHAT-ID\", \"text\": \"{{emoji}}<b>ALERT {{status}}</b>\n<code>Instance : {{labels.instance}}\nalert name : {{labels.alertname}}\njob : {{labels.job}}</code>\", \"disable_notification\": false,\"parse_mode\":\"HTML\"}",
-          "headers": {
-            "Accept-Encoding": "gzip,deflate"
-          },
-          "firingEmoji": "\\uD83E\\uDD14",
-          "resolvingEmoji": "\uD83D\uDE42"
-        }
-      },
-    
+         
       "AllowedHosts": "*"
     }
 
+### 1.2 targets.json
+**Targets** - templates to forwards. Url and Body is mustache templates. [More info about mustache](https://mustache.github.io/mustache.5.html).
+**target https:/youAlertproxy:8100/alert/kafka-ms** forward request to http://awx.uni.bn/api/v2/job_templates/108/launch/ ... 
+**target https:/youAlertproxy:8100/alert/tlg-itretail** forward message to telegram between telegram http api.
 
-### 1.2. user.json 
+All targets load dynamicaly, you not need restart application if targets.json is changed.
+example tagrets.json
+
+    {
+    "targets": {
+            "kafka-ms": {
+              "UrlTemplate": "http://awx.uni.bn/api/v2/job_templates/108/launch/",
+              "Bodytemplate": "{\"ask_inventory_on_launch\": false,\"can_start_without_user_input\": true,\"defaults\": {\"extra_vars\": \"\",\"inventory\": {\"id\": 3,\"name\": \"FirstInventory\"}},\"survey_enabled\": false,\"variables_needed_to_start\": [],\"node_templates_missing\": [],\"node_prompts_rejected\": [],\"job_template_data\": {\"id\": 108,\"description\": \"KAFKA-SERVICES-CHECK-RUN\",\"name\": \"KAFKA-SERVICES-CHECK-RUN\"}}",
+              "headers": {
+                "Accept-Encoding": "gzip,deflate",
+                "authorization": "Basic Yneneulewxo"
+              }
+            },
+            "tlg-itretail": {
+              "UrlTemplate": "https://api.telegram.org/botBOT-TOKEN/sendMessage",
+              "Bodytemplate": "{\"chat_id\": \"-CHAT-ID\", \"text\": \"{{emoji}}<b>ALERT {{status}}</b>\n<code>Instance : {{labels.instance}}\nalert name : {{labels.alertname}}\njob : {{labels.job}}</code>\", \"disable_notification\": false,\"parse_mode\":\"HTML\"}",
+              "headers": {
+                "Accept-Encoding": "gzip,deflate"
+              },
+              "firingEmoji": "\\uD83E\\uDD14",
+              "resolvingEmoji": "\uD83D\uDE42"
+            }
+          }
+     }
+
+### 1.3. user.json 
 AlertProxy work only with basic authorization.  Example user.json
 
     [ 
@@ -77,7 +84,7 @@ AlertProxy work only with basic authorization.  Example user.json
           "Password":"test"
        }
     ] 
-### 1.3. Logging config - serilog.json
+### 1.4. Logging config - serilog.json
 example:
 
     {

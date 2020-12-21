@@ -40,12 +40,22 @@ namespace AlertProxy
                        .AddCommandLine(args)
                        .Build();
 
-
                     webBuilder
-                      .UseConfiguration(config)
+                      .ConfigureAppConfiguration((builderContext, config) =>
+                      {
+                          IHostEnvironment env = builderContext.HostingEnvironment;
+                          config
+                          .SetBasePath(Directory.GetCurrentDirectory())
+                          .AddJsonFile(Path.Combine(AppContext.BaseDirectory, "cfg", "settings.json"), optional: false, reloadOnChange: true)
+                          .AddJsonFile(Path.Combine(AppContext.BaseDirectory, "cfg", "targets.json"), optional: false, reloadOnChange: true)
+                          .AddCommandLine(args);
+                      }
+                      )
+                      //.UseConfiguration(config)
 
                       .ConfigureKestrel((context, options) =>
                       {
+
                           options.Listen(IPAddress.Any, int.Parse(config.GetSection("SSL")["port"]), listenOptions =>
                           {
                               listenOptions.Protocols = HttpProtocols.Http1AndHttp2;

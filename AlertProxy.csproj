@@ -31,6 +31,9 @@
     <Content Update="cfg\settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="cfg\targets.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="cfg\users.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

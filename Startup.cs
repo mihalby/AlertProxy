@@ -39,9 +39,9 @@ namespace AlertProxy
             services.AddScoped<IUserList, UserList>();
             services.AddScoped<IUserService, UserService>();
 
+            services.Configure<Dictionary<string,Target>>(Configuration.GetSection("targets"));
 
-
-            services.AddSingleton<IConfiguration>(Configuration);
+            
             services.AddHttpClient();
 
             services.AddScoped<IProxy, Proxy>();

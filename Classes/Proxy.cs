@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using Stubble;
 using Stubble.Core.Builders;
@@ -22,17 +23,19 @@ namespace AlertProxy.Classes
     public class Proxy:IProxy
     {
         private readonly ILogger<Proxy> _logger;
-        private readonly IConfiguration _config;
+    
         private readonly IHttpClientFactory _clientFactory;
-        
+        private readonly IOptionsSnapshot<Dictionary<string, Target>> _options;
+
         private readonly HttpClient _client;
        
 
-        public Proxy(ILogger<Proxy> logger, IConfiguration config, IHttpClientFactory clientFactory)
+        public Proxy(ILogger<Proxy> logger,  IHttpClientFactory clientFactory, IOptionsSnapshot<Dictionary<string,Target>> optionsSnapshot)
         {
-            _config = config;
+         
             _logger = logger;
             _clientFactory = clientFactory;
+            _options = optionsSnapshot;
         
 
            _client = _clientFactory.CreateClient();
@@ -67,19 +70,20 @@ namespace AlertProxy.Classes
 
         private async Task<HttpResponseMessage> ProcessAlert(string target,object alert)
         {
-            var settings = _config.GetSection("targets").GetSection(target);
+            //var settings = _config.GetSection("targets").GetSection(target);
+            var settings = _options.Value[target];
 
             var st = new StubbleBuilder().Configure(settings => settings.AddJsonNet()).Build();
 
 
             
 
-            var Url = st.Render(settings["UrlTemplate"], alert);
+            var Url = st.Render(settings.UrlTemplate, alert);
             var request = new HttpRequestMessage(HttpMethod.Post, Url);
             //Add headers
-            foreach (var h in _config.GetSection("targets").GetSection(target).GetSection("headers").GetChildren().ToDictionary(p => p.Value))
+            foreach (var h in settings.headers)
             {
-                request.Headers.Add(h.Value.Key, h.Value.Value.ToString());
+                request.Headers.Add(h.Key, h.Value);
 
             }
 
@@ -89,12 +93,12 @@ namespace AlertProxy.Classes
             var state = jalert["status"];
 
             jalert.Add("emoji", "");
-            if (state.ToString().ToUpper() == "FIRING") jalert["emoji"] = settings["firingEmoji"] != null ? settings["firingEmoji"].ToString()  : "";
-            if (state.ToString().ToUpper() == "RESOLVED") jalert["emoji"] = settings["resolvingEmoji"] != null ? settings["resolvingEmoji"].ToString() : "";
+            if (state.ToString().ToUpper() == "FIRING") jalert["emoji"] = settings.firingEmoji != null ? settings.firingEmoji  : "";
+            if (state.ToString().ToUpper() == "RESOLVED") jalert["emoji"] = settings.resolvingEmoji != null ? settings.resolvingEmoji : "";
 
 
 
-            var Body = st.Render(settings["BodyTemplate"], jalert);
+            var Body = st.Render(settings.Bodytemplate, jalert);
             
             
             request.Content = new StringContent(
@@ -111,19 +115,22 @@ namespace AlertProxy.Classes
 
         public async Task<HttpResponseMessage> ProcessFree(string target, object obj)
         {
-            var settings = _config.GetSection("targets").GetSection(target);
+            var settings = _options.Value[target];
 
             var st = new StubbleBuilder().Configure(settings => settings.AddJsonNet()).Build();
-            var Url = st.Render(settings["UrlTemplate"], obj);
-            _client.BaseAddress = new Uri(Url);
+            var Url = st.Render(settings.UrlTemplate, obj);
+            
 
             
-            var Body = st.Render(settings["BodyTemplate"], obj);
+            var Body = st.Render(settings.Bodytemplate, obj);
                         
             var body = new StringContent(
                      Body, Encoding.UTF8, "application/json");
 
-            return await _client.PostAsync("", body);
+            var request = new HttpRequestMessage(HttpMethod.Post, Url);
+            request.Content = body;
+
+            return await _client.SendAsync(request);
         }
 
 
