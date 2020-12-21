@@ -45,12 +45,7 @@ namespace AlertProxy.Classes
                 List<string> ret = new List<string>();
                 try
                 {
-                    //Add headers
-                    foreach (var h in _config.GetSection("targets").GetSection(target).GetSection("headers").GetChildren().ToDictionary(p => p.Value))
-                    {
-                        _client.DefaultRequestHeaders.Add(h.Value.Key, h.Value.Value.ToString());
-
-                    }
+                    
 
                     var alerts = JObject.Parse(alert.ToString())["alerts"];
 
@@ -75,8 +70,19 @@ namespace AlertProxy.Classes
             var settings = _config.GetSection("targets").GetSection(target);
 
             var st = new StubbleBuilder().Configure(settings => settings.AddJsonNet()).Build();
+
+
+            
+
             var Url = st.Render(settings["UrlTemplate"], alert);
-            _client.BaseAddress = new Uri(Url);
+            var request = new HttpRequestMessage(HttpMethod.Post, Url);
+            //Add headers
+            foreach (var h in _config.GetSection("targets").GetSection(target).GetSection("headers").GetChildren().ToDictionary(p => p.Value))
+            {
+                request.Headers.Add(h.Value.Key, h.Value.Value.ToString());
+
+            }
+
 
             var jalert = JObject.Parse(alert.ToString());
 
@@ -91,10 +97,11 @@ namespace AlertProxy.Classes
             var Body = st.Render(settings["BodyTemplate"], jalert);
             
             
-            var body = new StringContent(
+            request.Content = new StringContent(
                      Body, Encoding.UTF8, "application/json");
 
-            return await _client.PostAsync("", body);
+            return await _client.SendAsync(request);
+                
 
             
 
