@@ -26,13 +26,14 @@ Download .zip from [Releases](https://github.com/mihalby/AlertProxy/releases) un
 ### Windows x64
 Download archive from [Releases](https://github.com/mihalby/AlertProxy/releases), change configs and run exe file.
 
-### 1. Create configs (settings.json, targets.json user.json, serilog.json)
+### 1. Create configs (settings.json, user.json, serilog.json)
 ### 1.1. settings.json
 Base application config
 **SSL** - configure ssl. Now service work only with ssl. Place you pfx to ./cfg directory. You will find fake pfx file in repo ./cfg, password 123123.
 
 example: 
-     {
+
+    {
       "SSL": {
         "password": "123123",
         "port": 8100,
